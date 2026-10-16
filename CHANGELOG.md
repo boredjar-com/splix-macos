@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1-macos3 — 2026-10-17
+
+* The package now installs `/Library/Printers/SpliX/splix-uninstall.sh`; the installer's last
+  pane and the README document how to uninstall (script, Homebrew cask, or repo checkout).
+* Homebrew cask: `brew install --cask boredjar-com/tap/splix-macos`.
+
 ## 2.0.1-macos2 — 2026-10-16
 
 * Double-click installer for people who never open Terminal: welcome / license / conclusion

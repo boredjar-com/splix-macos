@@ -73,6 +73,17 @@ lpadmin -p Samsung_ML-2160 -E -v socket://AirPort-Express.local:9100 \
   -P /Library/Printers/PPDs/Contents/Resources/SpliX-ml2160.ppd.gz -o PageSize=A4   # manual
 ```
 
+## Uninstall
+
+Everything the installer added is removed with one of these (print queues, filter, PPDs,
+installer receipt):
+
+```bash
+sudo /Library/Printers/SpliX/splix-uninstall.sh     # installed by the .pkg
+brew uninstall --cask splix-macos                   # if you installed through Homebrew
+sudo ./macos/uninstall.sh                           # from a checkout of this repository
+```
+
 ## Build from source
 
 Requirements: Xcode or the Command Line Tools. Nothing else.
@@ -84,7 +95,6 @@ sudo ./macos/install.sh          # installs filter + PPDs system-wide and restar
 sudo ./macos/install.sh --add-printer Samsung_ML-2160 socket://AirPort-Express.local:9100 ml2160
 ./macos/make-pkg.sh 2.0.1-macos2 # build/SpliX-macOS-2.0.1-macos2.pkg (double-click installer)
 ./macos/sign-notarize.sh 2.0.1-macos2   # maintainers: Developer ID build + notarization + stapling
-sudo ./macos/uninstall.sh        # removes filter, PPDs and queues using them
 ```
 
 Install locations: `/Library/Printers/SpliX/rastertoqpdl` and

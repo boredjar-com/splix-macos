@@ -16,6 +16,7 @@ mkdir -p "$STAGE/Library/Printers/SpliX" "$STAGE/Library/Printers/PPDs/Contents/
 # Terminal or CI build is clean.)
 cp -X "$TOP/build/rastertoqpdl" "$STAGE/Library/Printers/SpliX/rastertoqpdl"
 cp -X "$TOP/macos/splix-autosetup.sh" "$STAGE/Library/Printers/SpliX/splix-autosetup.sh"
+cp -X "$TOP/macos/uninstall.sh" "$STAGE/Library/Printers/SpliX/splix-uninstall.sh"
 chmod 755 "$STAGE/Library/Printers/SpliX/"*
 # Flat layout: Apple's cups-driverd ignores subfolders, "Select Software…" would not list them.
 for p in "$TOP/build/ppds/"*.ppd.gz; do cp -X "$p" "$STAGE/Library/Printers/PPDs/Contents/Resources/SpliX-$(basename "$p")"; done
@@ -23,7 +24,7 @@ chmod 644 "$STAGE/Library/Printers/PPDs/Contents/Resources/"SpliX-*.ppd.gz
 cat > "$SCRIPTS/postinstall" <<'POST'
 #!/bin/bash
 chown -R root:wheel /Library/Printers/SpliX /Library/Printers/PPDs/Contents/Resources/SpliX-*.ppd.gz
-chmod 755 /Library/Printers/SpliX/rastertoqpdl /Library/Printers/SpliX/splix-autosetup.sh
+chmod 755 /Library/Printers/SpliX/rastertoqpdl /Library/Printers/SpliX/splix-autosetup.sh /Library/Printers/SpliX/splix-uninstall.sh
 rm -rf /Library/Printers/PPDs/Contents/Resources/SpliX   # legacy subfolder layout
 launchctl kickstart -k system/org.cups.cupsd || true
 sleep 2
