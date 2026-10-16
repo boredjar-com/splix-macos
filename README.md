@@ -1,10 +1,23 @@
-# SpliX for macOS — Samsung, Xerox & Dell SPL/QPDL printer driver for macOS 27 on Apple Silicon
+<p align="center"><img src="assets/icon.png" width="128" alt="SpliX for macOS"></p>
 
-**Keywords:** Samsung printer driver macOS 27 · Samsung ML-2160 macOS · Apple Silicon M1 M2 M3 M4 ·
-Rosetta removed · "Filter failed" · `com.apple.badarch-error` · CUPS filter arm64 · SPL QPDL ·
-rastertoqpdl · Samsung ML-1640 ML-1660 ML-1670 ML-2010 ML-2165 ML-2240 ML-2250 ML-2510 ML-2525 ML-3310 ·
-SCX-4200 SCX-4300 SCX-4600 SCX-4623 · CLP-310 CLP-315 CLP-600 CLX-3160 CLX-3175 · Xerox Phaser 3117 3124 3140 ·
-Dell 1100 1110 · AirPort Express USB printer sharing · open source · GPL
+<h1 align="center">SpliX for macOS</h1>
+
+<p align="center"><b>Keep your printer. Upgrade your Mac.</b><br>
+Native printing for supported Samsung, Xerox and Dell laser printers on macOS 27 and Apple Silicon. No Rosetta required.</p>
+
+<p align="center">
+<a href="https://github.com/boredjar-com/splix-macos/releases/latest">Download for macOS</a> ·
+<a href="docs/SUPPORTED-PRINTERS.md">Check your printer</a> ·
+<a href="https://github.com/boredjar-com/splix-macos/issues">Get help</a> ·
+<code>brew install --cask boredjar-com/tap/splix-macos</code>
+</p>
+
+---
+
+<sub><b>Searching for:</b> Samsung printer driver macOS 27 · Samsung ML-2160 macOS · "Filter failed" · <code>com.apple.badarch-error</code> ·
+Rosetta removed · Apple Silicon M1 M2 M3 M4 · CUPS filter arm64 · SPL QPDL · rastertoqpdl ·
+Samsung ML-1640 ML-1660 ML-1670 ML-2010 ML-2165 ML-2240 ML-2250 ML-2510 ML-2525 ML-3310 · SCX-4200 SCX-4300 SCX-4600 SCX-4623 ·
+CLP-310 CLP-315 CLP-600 CLX-3160 CLX-3175 · Xerox Phaser 3117 3124 3140 · Dell 1100 1110 · AirPort Express USB printer sharing · open source · GPL</sub>
 
 Native **universal (arm64 + x86_64)** CUPS driver for Samsung laser printers (and their Xerox,
 Dell, Toshiba and Lexmark rebadges) that speak **SPL / QPDL**. 82 printer models.

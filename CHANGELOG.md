@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.1-macos4 — 2026-10-17
+
+* Icon: printers added with a SpliX PPD show the SpliX icon in System Settings
+  (`*APPrinterIconPath`), and the installer shows it too.
+* Upgrading refreshes the PPD of queues that already use SpliX (keeps the page size).
+* README rewritten around "Keep your printer. Upgrade your Mac."; PPD validation on CI now
+  checks the referenced filter and icon against a staged root.
+
 ## 2.0.1-macos3 — 2026-10-17
 
 * The package now installs `/Library/Printers/SpliX/splix-uninstall.sh`; the installer's last

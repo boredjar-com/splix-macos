@@ -15,6 +15,9 @@ install -d -o root -g wheel -m 755 "$FILTER_DIR"
 rm -rf "$PPD_DIR/SpliX" "$PPD_DIR"/SpliX-*.ppd.gz   # drop any previous layout
 # CUPS refuses filters that are not root-owned or are group/world writable.
 install -o root -g wheel -m 755 "$TOP/build/rastertoqpdl" "$FILTER_DIR/rastertoqpdl"
+install -o root -g wheel -m 755 "$TOP/macos/splix-autosetup.sh" "$FILTER_DIR/splix-autosetup.sh"
+install -o root -g wheel -m 755 "$TOP/macos/uninstall.sh" "$FILTER_DIR/splix-uninstall.sh"
+install -o root -g wheel -m 644 "$TOP/assets/SpliX.icns" "$FILTER_DIR/SpliX.icns"
 for p in "$TOP/build/ppds/"*.ppd.gz; do install -o root -g wheel -m 644 "$p" "$PPD_DIR/SpliX-$(basename "$p")"; done
 echo "installed $FILTER_DIR/rastertoqpdl and $(ls "$PPD_DIR"/SpliX-*.ppd.gz | wc -l | tr -d ' ') PPDs"
 

@@ -28,6 +28,15 @@ ppd_for_model() {
   return 1
 }
 
+# Upgrade path: re-apply the freshly installed PPD to a queue that already uses SpliX, keeping
+# the page size the user had (lpadmin -P resets PPD defaults).
+refresh_queue() {
+  local q="$1" ppd="$2" size
+  size="$(sed -n 's/^\*DefaultPageSize:[[:space:]]*//p' "/etc/cups/ppd/$q.ppd" | head -1)"
+  say "queue $q already uses SpliX; refreshing its PPD (PageSize=${size:-$pagesize})"
+  [ $DRY -eq 1 ] || lpadmin -p "$q" -P "$ppd" -o "PageSize=${size:-$pagesize}"
+}
+
 found=0; added=0; repaired=0
 # lpinfo output is localized; only the "key = value" lines are parsed.
 while IFS= read -r line; do
@@ -43,7 +52,7 @@ while IFS= read -r line; do
       name="Samsung_$(printf '%s' "${mdl% Series}" | tr -c 'A-Za-z0-9_.-' '_')"
       if [ -f "/etc/cups/ppd/$name.ppd" ]; then
         if grep -q 'Printers/SpliX/rastertoqpdl' "/etc/cups/ppd/$name.ppd"; then
-          say "queue $name already uses SpliX, left untouched"
+          refresh_queue "$name" "$ppd"
         else
           say "queue $name uses the vendor driver; switching it to $(basename "$ppd")"
           [ $DRY -eq 1 ] || lpadmin -p "$name" -P "$ppd" -o PageSize=$pagesize && repaired=$((repaired+1))

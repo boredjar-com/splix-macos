@@ -17,6 +17,7 @@ mkdir -p "$STAGE/Library/Printers/SpliX" "$STAGE/Library/Printers/PPDs/Contents/
 cp -X "$TOP/build/rastertoqpdl" "$STAGE/Library/Printers/SpliX/rastertoqpdl"
 cp -X "$TOP/macos/splix-autosetup.sh" "$STAGE/Library/Printers/SpliX/splix-autosetup.sh"
 cp -X "$TOP/macos/uninstall.sh" "$STAGE/Library/Printers/SpliX/splix-uninstall.sh"
+cp -X "$TOP/assets/SpliX.icns" "$STAGE/Library/Printers/SpliX/SpliX.icns"
 chmod 755 "$STAGE/Library/Printers/SpliX/"*
 # Flat layout: Apple's cups-driverd ignores subfolders, "Select Software…" would not list them.
 for p in "$TOP/build/ppds/"*.ppd.gz; do cp -X "$p" "$STAGE/Library/Printers/PPDs/Contents/Resources/SpliX-$(basename "$p")"; done
@@ -25,6 +26,7 @@ cat > "$SCRIPTS/postinstall" <<'POST'
 #!/bin/bash
 chown -R root:wheel /Library/Printers/SpliX /Library/Printers/PPDs/Contents/Resources/SpliX-*.ppd.gz
 chmod 755 /Library/Printers/SpliX/rastertoqpdl /Library/Printers/SpliX/splix-autosetup.sh /Library/Printers/SpliX/splix-uninstall.sh
+chmod 644 /Library/Printers/SpliX/SpliX.icns
 rm -rf /Library/Printers/PPDs/Contents/Resources/SpliX   # legacy subfolder layout
 launchctl kickstart -k system/org.cups.cupsd || true
 sleep 2
@@ -34,7 +36,7 @@ POST
 chmod 755 "$SCRIPTS/postinstall"
 pkgbuild --root "$STAGE" --scripts "$SCRIPTS" --identifier com.boredjar.splix-macos --version "$PKGVER" \
   --install-location / --ownership recommended "$TOP/build/SpliX-component.pkg"
-cp -X "$TOP/macos/pkg/welcome.html" "$TOP/macos/pkg/conclusion.html" "$TOP/macos/pkg/license.txt" "$RES/"
+cp -X "$TOP/macos/pkg/welcome.html" "$TOP/macos/pkg/conclusion.html" "$TOP/macos/pkg/license.txt" "$TOP/macos/pkg/background.png" "$RES/"
 sed "s/__VERSION__/$PKGVER/" "$TOP/macos/pkg/distribution.xml" > "$TOP/build/distribution.xml"
 productbuild --distribution "$TOP/build/distribution.xml" --resources "$RES" --package-path "$TOP/build" \
   "$TOP/build/SpliX-macOS-$VER.pkg"
