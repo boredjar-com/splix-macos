@@ -23,8 +23,8 @@ for gz in "$TOP"/build/ppds/*.ppd.gz; do
   ver="$(gunzip -c "$gz" | sed -n 's/^\*QPDL QPDLVersion:[[:space:]]*"\(.*\)"/\1/p' | head -1)"
   col="$(gunzip -c "$gz" | sed -n 's/^\*ColorDevice:[[:space:]]*\(.*\)/\1/p' | head -1)"
   [ "$col" = "True" ] && col="yes" || col="no"
-  tested=""; [ "$f" = "ml2160" ] && tested="yes (AirPort Express, socket://)"
-  echo "| $nick | \`$f.ppd.gz\` | v$ver | $col | $tested |"
+  tested=""; [ "$f" = "ml2160" ] && tested="yes (USB and AirPort Express socket://)"
+  echo "| $nick | \`SpliX-$f.ppd.gz\` | v$ver | $col | $tested |"
 done
 cat <<'FTR'
 

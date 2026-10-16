@@ -38,8 +38,9 @@ feeds the filter:
 PDF ──▶ cgpdftoraster (Apple) ──▶ rastertoqpdl (this project) ──▶ socket:// | usb:// | riousbprint:// ──▶ printer
 ```
 
-Verified on **macOS 27.0.1 (Apple Silicon)** with a **Samsung ML-2160** shared by an **AirPort
-Express** (Bonjour `_pdl-datastream._tcp`, raw port 9100). Details: [docs/ROOT-CAUSE.md](docs/ROOT-CAUSE.md).
+Verified on **macOS 27.0.1 (Apple Silicon)** with a **Samsung ML-2160**, both over **USB** and
+shared by an **AirPort Express** (Bonjour `_pdl-datastream._tcp`, raw port 9100).
+Details: [docs/ROOT-CAUSE.md](docs/ROOT-CAUSE.md) and [docs/TESTING.md](docs/TESTING.md).
 
 ## Install (prebuilt package)
 
@@ -52,6 +53,11 @@ Express** (Bonjour `_pdl-datastream._tcp`, raw port 9100). Details: [docs/ROOT-C
    or IP). In **Use**, pick **Select Software…**, type `SpliX` and choose your model, e.g.
    **Samsung ML-2160 (SpliX)**.
 
+   If the old Samsung driver is still installed, macOS auto-selects *its* PPD (the broken
+   one) when the printer is plugged in. Either pick the `(SpliX)` entry by hand, or remove
+   the vendor driver first (`/Library/Printers/Samsung` and the `Samsung *.gz` files in
+   `/Library/Printers/PPDs/Contents/Resources`).
+
 ### Terminal alternative
 
 Printer behind an AirPort Express / Time Capsule or any raw-port print server:
@@ -59,7 +65,7 @@ Printer behind an AirPort Express / Time Capsule or any raw-port print server:
 ```bash
 lpadmin -p Samsung_ML-2160 -E \
   -v socket://AirPort-Express.local:9100 \
-  -P /Library/Printers/PPDs/Contents/Resources/SpliX/ml2160.ppd.gz \
+  -P /Library/Printers/PPDs/Contents/Resources/SpliX-ml2160.ppd.gz \
   -o PageSize=A4 -o printer-is-shared=false
 ```
 
@@ -80,7 +86,7 @@ sudo ./macos/uninstall.sh        # removes filter, PPDs and queues using them
 ```
 
 Install locations: `/Library/Printers/SpliX/rastertoqpdl` and
-`/Library/Printers/PPDs/Contents/Resources/SpliX/*.ppd.gz`.
+`/Library/Printers/PPDs/Contents/Resources/SpliX-*.ppd.gz` (flat: Apple's `cups-driverd` does not scan subfolders).
 
 ## Repository layout
 
@@ -93,14 +99,14 @@ Install locations: `/Library/Printers/SpliX/rastertoqpdl` and
 | `macos/install.sh` · `uninstall.sh` · `make-pkg.sh` | system install, removal, `.pkg` builder |
 | `tests/smoke.sh` | end-to-end offline test across every PPD |
 | `scripts/gen-supported-list.sh` | regenerates `docs/SUPPORTED-PRINTERS.md` |
-| `docs/` | root-cause analysis, supply-level investigation, troubleshooting |
+| `docs/` | root-cause analysis, supply-level investigation, troubleshooting, verification log |
 
 ## Supply levels (toner)
 
-**Not available** for printers reached through an AirPort Express, and System Settings will
-say so. Low-end Samsung engines such as the ML-2160 implement PJL as a stub (`@PJL INFO STATUS`
-returns an empty body), have no network stack so no SNMP, and Samsung's own driver read toner
-through proprietary USB control requests that a print server cannot relay.
+**Not available** on low-end Samsung engines such as the ML-2160, over USB or through an
+AirPort Express, and System Settings says "Information not available". The engine implements
+PJL as a stub (`@PJL INFO STATUS` returns an empty body), has no SNMP, and Samsung's own driver
+read toner through proprietary USB control transfers outside the printer class interface.
 Investigation and raw captures: [docs/SUPPLY-LEVELS.md](docs/SUPPLY-LEVELS.md).
 The printer's own configuration report page (see the printer manual) still shows toner.
 

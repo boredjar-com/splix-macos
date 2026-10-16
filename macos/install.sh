@@ -7,15 +7,16 @@
 set -euo pipefail
 TOP="$(cd "$(dirname "$0")/.." && pwd)"
 FILTER_DIR=/Library/Printers/SpliX
-PPD_DIR=/Library/Printers/PPDs/Contents/Resources/SpliX
+PPD_DIR=/Library/Printers/PPDs/Contents/Resources   # must be flat: Apple's cups-driverd does not scan subfolders
 [ "$(id -u)" -eq 0 ] || { echo "run with sudo"; exit 1; }
 [ -x "$TOP/build/rastertoqpdl" ] || { echo "nothing built; run ./macos/build.sh first"; exit 1; }
 
-install -d -o root -g wheel -m 755 "$FILTER_DIR" "$PPD_DIR"
+install -d -o root -g wheel -m 755 "$FILTER_DIR"
+rm -rf "$PPD_DIR/SpliX" "$PPD_DIR"/SpliX-*.ppd.gz   # drop any previous layout
 # CUPS refuses filters that are not root-owned or are group/world writable.
 install -o root -g wheel -m 755 "$TOP/build/rastertoqpdl" "$FILTER_DIR/rastertoqpdl"
-install -o root -g wheel -m 644 "$TOP/build/ppds/"*.ppd.gz "$PPD_DIR/"
-echo "installed $FILTER_DIR/rastertoqpdl and $(ls "$PPD_DIR" | wc -l | tr -d ' ') PPDs"
+for p in "$TOP/build/ppds/"*.ppd.gz; do install -o root -g wheel -m 644 "$p" "$PPD_DIR/SpliX-$(basename "$p")"; done
+echo "installed $FILTER_DIR/rastertoqpdl and $(ls "$PPD_DIR"/SpliX-*.ppd.gz | wc -l | tr -d ' ') PPDs"
 
 restart=1; add=()
 while [ $# -gt 0 ]; do
@@ -31,7 +32,7 @@ if [ $restart -eq 1 ]; then
 fi
 if [ ${#add[@]} -eq 3 ]; then
   name="${add[0]}"; uri="${add[1]}"; model="${add[2]}"
-  ppd="$PPD_DIR/$model.ppd.gz"
+  ppd="$PPD_DIR/SpliX-$model.ppd.gz"
   [ -f "$ppd" ] || { echo "no PPD for model '$model' in $PPD_DIR"; exit 1; }
   lpadmin -p "$name" -E -v "$uri" -P "$ppd" -o printer-is-shared=false -o printer-error-policy=retry-job
   # A4 default outside US/CA/MX locales; Letter otherwise.

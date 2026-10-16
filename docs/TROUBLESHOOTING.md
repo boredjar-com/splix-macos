@@ -33,7 +33,7 @@ Runs PDF → `cgpdftoraster` → `rastertoqpdl` for every PPD and checks the PJL
 ## Manually run the filter on a file
 
 ```bash
-export PPD=/tmp/ml2160.ppd; gunzip -c /Library/Printers/PPDs/Contents/Resources/SpliX/ml2160.ppd.gz > $PPD
+export PPD=/tmp/ml2160.ppd; gunzip -c /Library/Printers/PPDs/Contents/Resources/SpliX-ml2160.ppd.gz > $PPD
 /usr/libexec/cups/filter/cgpdftoraster 1 me test 1 "PageSize=A4" file.pdf > /tmp/job.ras
 /Library/Printers/SpliX/rastertoqpdl 1 me test 1 "PageSize=A4" /tmp/job.ras > /tmp/job.qpdl
 nc AirPort-Express.local 9100 < /tmp/job.qpdl        # sends the raw job to the printer

@@ -60,3 +60,29 @@ EOF2
 If you have a Samsung model that *does* answer `@PJL INFO STATUS` with `CODE=`, open an issue
 with the reply: mapping those codes to CUPS `STATE:` reasons (media-empty, cover-open,
 toner-low) is a small, self-contained contribution.
+
+## Direct USB test (printer plugged into the Mac)
+
+Same printer connected over USB-C, queried through a CUPS command filter so the replies come
+back over the real USB bulk pipe (`cupsBackChannelRead`) and the side channel:
+
+| Request | Reply |
+|---------|-------|
+| side channel `CUPS_SC_CMD_GET_BIDI` | `1` (bidirectional supported) |
+| side channel `CUPS_SC_CMD_GET_DEVICE_ID` | `SERN:…;MFG:Samsung;CMD:SPL,FWV,PIC,EXT;MDL:ML-2160 Series;CLS:PRINTER;MODE:SPL5,R0STATUS:IDLE;` |
+| `@PJL INFO STATUS` / `INFO CONFIG` / `INFO PAGECOUNT` | header + `\x0c`, empty body |
+| `@PJL INFO USTATUS` | `\x0c` only |
+| `@PJL INFO ID` / `GETDEVICEID` | nothing |
+| `@PJL LITESMSTATUS` | nothing, then the USB pipe stalled (`WritePipe returned e00002c0`) |
+
+Two useful facts came out of it:
+
+* `R0STATUS` in the IEEE 1284 device ID **is live** (`IDLE` over USB, `BUSY` while the AirPort
+  held it). It is the only status the engine exposes without the vendor protocol.
+* Toner level is not available over the data channel at all, USB or network. Samsung's
+  macOS driver read it with vendor USB control transfers (`IOSecUSB` in `commandtosec`),
+  outside the printer class interface. Reverse-engineering those needs a USB capture of the
+  vendor tool on a machine where it still runs.
+
+Conclusion: the PPDs deliberately declare no `*cupsCommands`, so System Settings shows
+"Information not available" instead of running a command job that would hang the pipe.

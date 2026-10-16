@@ -4,11 +4,15 @@
 #     sudo ./macos/uninstall.sh
 set -uo pipefail
 [ "$(id -u)" -eq 0 ] || { echo "run with sudo"; exit 1; }
-for q in $(lpstat -p 2>/dev/null | awk '{print $2}'); do
-  if grep -qs 'Printers/SpliX/rastertoqpdl' "/etc/cups/ppd/$q.ppd"; then
+# Locale-independent: find queues by their installed PPD, not by parsing lpstat text.
+for ppd in /etc/cups/ppd/*.ppd; do
+  [ -f "$ppd" ] || continue
+  if grep -qs 'Printers/SpliX/rastertoqpdl' "$ppd"; then
+    q="$(basename "$ppd" .ppd)"
     lpadmin -x "$q" && echo "removed queue $q"
   fi
 done
-rm -rf /Library/Printers/SpliX /Library/Printers/PPDs/Contents/Resources/SpliX
+rm -rf /Library/Printers/SpliX /Library/Printers/PPDs/Contents/Resources/SpliX \
+       /Library/Printers/PPDs/Contents/Resources/SpliX-*.ppd.gz
 launchctl kickstart -k system/org.cups.cupsd
 echo "SpliX for macOS uninstalled"
