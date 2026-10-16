@@ -1,0 +1,34 @@
+name: Printer report (works / does not work)
+description: Tell us whether your Samsung / Xerox / Dell SPL printer prints with this driver
+labels: [printer-report]
+body:
+  - type: input
+    id: model
+    attributes: { label: Printer model, placeholder: Samsung ML-2160 }
+    validations: { required: true }
+  - type: input
+    id: ppd
+    attributes: { label: PPD chosen, placeholder: Samsung ML-2160 (SpliX) }
+    validations: { required: true }
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection
+      options: [USB directly to the Mac, AirPort Express / Extreme / Time Capsule, Other print server (raw 9100), Shared from another Mac]
+    validations: { required: true }
+  - type: input
+    id: macos
+    attributes: { label: macOS version and chip, placeholder: "macOS 27.0.1, M2" }
+    validations: { required: true }
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options: [Prints correctly, Prints with defects (describe), Nothing prints]
+    validations: { required: true }
+  - type: textarea
+    id: log
+    attributes:
+      label: CUPS log excerpt
+      description: See docs/TROUBLESHOOTING.md. Paste the lines mentioning SpliX / rastertoqpdl / ERROR.
+      render: text

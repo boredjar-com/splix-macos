@@ -1,0 +1,17 @@
+name: build
+on: [push, pull_request]
+jobs:
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build universal filter and PPDs
+        run: ./macos/build.sh
+      - name: Offline smoke test (all PPDs)
+        run: ./tests/smoke.sh
+      - name: Build installer package
+        run: ./macos/make-pkg.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SpliX-macOS-pkg
+          path: build/*.pkg
