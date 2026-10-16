@@ -52,10 +52,9 @@ Details: [docs/ROOT-CAUSE.md](docs/ROOT-CAUSE.md) and [docs/TESTING.md](docs/TES
    Samsung driver).
 3. Print from any app. Done.
 
-Until the package is signed and notarized, macOS Gatekeeper refuses the first double-click:
-right-click the `.pkg` → **Open**, or go to **System Settings → Privacy & Security** and click
-**Open Anyway**. The whole thing is open source and the CI build log for every release is
-public, if you want to check what you are running.
+The package is signed with a Developer ID certificate (BORED JAR SL) and notarized by Apple,
+so it opens with a plain double-click, no Gatekeeper warning. Everything inside is open source
+and reproducible from this repository; the CI build log of each release is public.
 
 If the printer was not connected during installation, either run the installer again later or
 add it by hand: **System Settings → Printers & Scanners → Add Printer…**, select it, and under
@@ -83,7 +82,7 @@ Requirements: Xcode or the Command Line Tools. Nothing else.
 sudo ./macos/install.sh          # installs filter + PPDs system-wide and restarts cupsd
 sudo ./macos/install.sh --add-printer Samsung_ML-2160 socket://AirPort-Express.local:9100 ml2160
 ./macos/make-pkg.sh 2.0.1-macos2 # build/SpliX-macOS-2.0.1-macos2.pkg (double-click installer)
-./macos/sign-notarize.sh build/SpliX-macOS-2.0.1-macos2.pkg   # optional, needs Developer ID Installer cert
+./macos/sign-notarize.sh 2.0.1-macos2   # maintainers: Developer ID build + notarization + stapling
 sudo ./macos/uninstall.sh        # removes filter, PPDs and queues using them
 ```
 

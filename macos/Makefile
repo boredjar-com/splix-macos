@@ -12,6 +12,8 @@ BUILD      := $(TOP)/build
 ARCHS      ?= -arch arm64 -arch x86_64
 MINOS      ?= -mmacosx-version-min=12.0
 THREADS    ?= 2
+# Developer ID Application identity for notarizable builds; "-" = ad-hoc (local/CI builds).
+SIGN_ID    ?= -
 CACHESIZE  ?= 30
 
 CXX        := clang++
@@ -39,7 +41,8 @@ $(BUILD)/obj/%.o: $(JBIG)/%.c
 
 $(BUILD)/rastertoqpdl: $(OBJS)
 	$(CXX) $(LDFLAGS) $^ -o $@
-	codesign --force --sign - --identifier org.splix.rastertoqpdl $@
+	if [ "$(SIGN_ID)" = "-" ]; then codesign --force --sign - --identifier org.splix.rastertoqpdl $@; \
+	else codesign --force --sign "$(SIGN_ID)" --options runtime --timestamp --identifier org.splix.rastertoqpdl $@; fi
 
 clean:
 	rm -rf $(BUILD)

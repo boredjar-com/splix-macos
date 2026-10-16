@@ -6,7 +6,9 @@
   panes, and a post-install step (`splix-autosetup.sh`) that detects Samsung printers over USB
   or Bonjour, creates the queue with the right SpliX PPD, picks Letter/A4 from the locale, sets
   the default printer, and repairs queues that still use the Intel-only Samsung driver.
-* `macos/sign-notarize.sh` for Developer ID signing, notarization and stapling.
+* Release package signed with Developer ID (BORED JAR SL) and notarized by Apple: plain
+  double-click install, no Gatekeeper warning. `macos/sign-notarize.sh` rebuilds the filter with
+  hardened runtime + secure timestamp, signs the package and staples the notarization ticket.
 * Package identifier `com.boredjar.splix-macos`; numeric Installer version derived from the tag.
 
 ## 2.0.1-macos1 — 2026-10-16
