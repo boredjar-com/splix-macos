@@ -43,35 +43,35 @@ Verified on **macOS 27.0.1 (Apple Silicon)** with a **Samsung ML-2160**, both ov
 shared by an **AirPort Express** (Bonjour `_pdl-datastream._tcp`, raw port 9100).
 Details: [docs/ROOT-CAUSE.md](docs/ROOT-CAUSE.md) and [docs/TESTING.md](docs/TESTING.md).
 
-## Install (prebuilt package)
+## Install (no Terminal needed)
 
-1. Download `SpliX-macOS-<version>.pkg` from [Releases](../../releases).
-2. The package is not notarized. Right-click → **Open**, or from Terminal:
-   ```bash
-   sudo installer -pkg SpliX-macOS-2.0.1.pkg -target /
-   ```
-3. **System Settings → Printers & Scanners → Add Printer…** Select your printer (Bonjour, USB
-   or IP). In **Use**, pick **Select Software…**, type `SpliX` and choose your model, e.g.
-   **Samsung ML-2160 (SpliX)**.
+1. Switch the printer on and connect it (USB, or shared by an AirPort Express / Time Capsule).
+2. Download `SpliX-macOS-<version>.pkg` from [Releases](../../releases) and double-click it.
+   The installer explains what it does, installs the driver and **adds your printer
+   automatically** (it also repairs printers macOS had already added with the broken
+   Samsung driver).
+3. Print from any app. Done.
 
-   If the old Samsung driver is still installed, macOS auto-selects *its* PPD (the broken
-   one) when the printer is plugged in. Either pick the `(SpliX)` entry by hand, or remove
-   the vendor driver first (`/Library/Printers/Samsung` and the `Samsung *.gz` files in
-   `/Library/Printers/PPDs/Contents/Resources`).
+Until the package is signed and notarized, macOS Gatekeeper refuses the first double-click:
+right-click the `.pkg` → **Open**, or go to **System Settings → Privacy & Security** and click
+**Open Anyway**. The whole thing is open source and the CI build log for every release is
+public, if you want to check what you are running.
+
+If the printer was not connected during installation, either run the installer again later or
+add it by hand: **System Settings → Printers & Scanners → Add Printer…**, select it, and under
+**Use** pick **Select Software…**, type `SpliX` and choose your model, e.g. **Samsung ML-2160
+(SpliX)**. If the old Samsung driver is still installed, macOS auto-selects *its* PPD when a USB
+printer is plugged in; pick the `(SpliX)` entry instead, or run
+`sudo /Library/Printers/SpliX/splix-autosetup.sh` which fixes such queues.
 
 ### Terminal alternative
 
-Printer behind an AirPort Express / Time Capsule or any raw-port print server:
-
 ```bash
-lpadmin -p Samsung_ML-2160 -E \
-  -v socket://AirPort-Express.local:9100 \
-  -P /Library/Printers/PPDs/Contents/Resources/SpliX-ml2160.ppd.gz \
-  -o PageSize=A4 -o printer-is-shared=false
+sudo installer -pkg SpliX-macOS-2.0.1-macos2.pkg -target /       # same as double-click
+sudo /Library/Printers/SpliX/splix-autosetup.sh --dry-run        # show what would be added
+lpadmin -p Samsung_ML-2160 -E -v socket://AirPort-Express.local:9100 \
+  -P /Library/Printers/PPDs/Contents/Resources/SpliX-ml2160.ppd.gz -o PageSize=A4   # manual
 ```
-
-USB-attached printer: use the `usb://…` URI printed by `lpinfo -v`.
-Then print anything, or `lp -d Samsung_ML-2160 somefile.pdf`.
 
 ## Build from source
 
@@ -82,7 +82,8 @@ Requirements: Xcode or the Command Line Tools. Nothing else.
 ./tests/smoke.sh                 # offline: PDF → CUPS raster → QPDL for all 82 PPDs, no printer needed
 sudo ./macos/install.sh          # installs filter + PPDs system-wide and restarts cupsd
 sudo ./macos/install.sh --add-printer Samsung_ML-2160 socket://AirPort-Express.local:9100 ml2160
-./macos/make-pkg.sh              # build/SpliX-macOS-2.0.1.pkg
+./macos/make-pkg.sh 2.0.1-macos2 # build/SpliX-macOS-2.0.1-macos2.pkg (double-click installer)
+./macos/sign-notarize.sh build/SpliX-macOS-2.0.1-macos2.pkg   # optional, needs Developer ID Installer cert
 sudo ./macos/uninstall.sh        # removes filter, PPDs and queues using them
 ```
 
@@ -97,7 +98,10 @@ Install locations: `/Library/Printers/SpliX/rastertoqpdl` and
 | `third_party/jbigkit-2.1/libjbig/` | JBIG-KIT 2.1, `libjbig85` only, **unmodified** (GPL-2.0-or-later) |
 | `macos/Makefile` | universal build of `rastertoqpdl`, ad-hoc code-signed |
 | `macos/gen-ppds.sh` | PPD rewrite for macOS: absolute filter path, `(SpliX)` NickName, `1284DeviceID` for Samsung models |
-| `macos/install.sh` · `uninstall.sh` · `make-pkg.sh` | system install, removal, `.pkg` builder |
+| `macos/splix-autosetup.sh` | detects Samsung printers (USB / Bonjour), creates queues with the right PPD, repairs vendor-driver queues; run by the installer |
+| `macos/make-pkg.sh` · `macos/pkg/` | double-click installer: component pkg + welcome / license / conclusion panes |
+| `macos/sign-notarize.sh` | Developer ID signing + notarization + stapling of the `.pkg` |
+| `macos/install.sh` · `uninstall.sh` | script-based install and removal for developers |
 | `tests/smoke.sh` | end-to-end offline test across every PPD |
 | `scripts/gen-supported-list.sh` | regenerates `docs/SUPPORTED-PRINTERS.md` |
 | `docs/` | root-cause analysis, supply-level investigation, troubleshooting, verification log |

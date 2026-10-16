@@ -14,6 +14,8 @@ Samsung ML-2160 (QPDL v3). Add your own runs via the "Printer report" issue temp
 | Script install | `sudo ./macos/install.sh --add-printer …` | filter + 82 PPDs installed, queue created |
 | Package install / upgrade | `installer -pkg build/SpliX-macOS-2.0.1.pkg -target /` | success, `cups-driverd` lists all 82 `(SpliX)` models |
 | Uninstall | `sudo ./macos/uninstall.sh` | filter, PPDs and SpliX queues removed |
+| Installer auto-setup, clean machine | no queues, printer on AirPort, `installer -pkg …macos2.pkg` | queue `Samsung_ML-2160` created with `SpliX-ml2160.ppd.gz`, A4 (es_ES locale), set as default; test page printed |
+| Installer repairs vendor queue | queue created with the Samsung PPD, then install | queue switched to the SpliX PPD, logged in `/Library/Printers/SpliX/autosetup.log` |
 | "Select Software…" visibility | `lpinfo -m \| grep '(SpliX)'` | 82 entries **only with the flat layout**; a `Resources/SpliX/` subfolder is ignored by Apple's `cups-driverd` |
 | Add Printer auto-match | plug USB printer with Samsung driver still installed | macOS auto-picks the **vendor** PPD (broken). Choose the `(SpliX)` one manually, or uninstall the Samsung driver |
 | Supply levels, AirPort and USB | raw PJL + CUPS command filter probe | not available on this engine, see `SUPPLY-LEVELS.md` |

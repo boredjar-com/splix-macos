@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.1-macos2 — 2026-10-16
+
+* Double-click installer for people who never open Terminal: welcome / license / conclusion
+  panes, and a post-install step (`splix-autosetup.sh`) that detects Samsung printers over USB
+  or Bonjour, creates the queue with the right SpliX PPD, picks Letter/A4 from the locale, sets
+  the default printer, and repairs queues that still use the Intel-only Samsung driver.
+* `macos/sign-notarize.sh` for Developer ID signing, notarization and stapling.
+* Package identifier `com.boredjar.splix-macos`; numeric Installer version derived from the tag.
+
 ## 2.0.1-macos1 — 2026-10-16
 
 * First release. SpliX 2.0.1 `rastertoqpdl` built as a universal arm64 + x86_64 macOS binary,
