@@ -10,7 +10,7 @@ Samsung ML-2160 (QPDL v3). Add your own runs via the "Printer report" issue temp
 | PPD validity | `cupstestppd -W all` on every generated PPD | all pass |
 | AirPort Express, raw port 9100 | `socket://AirPort-Express.local:9100` | page printed, job `completed`, 1 sheet, 14 s |
 | USB direct | `usb://Samsung/ML-2160%20Series?serial=…` | page printed, job `completed`, 8 s |
-| AirPort Express, Apple protocol | `dnssd://…_riousbprint._tcp.local./` | queue created; print not yet verified (printer was on USB at the time) |
+| AirPort Express, Apple protocol | `dnssd://…_riousbprint._tcp.local./` (resolves to `riousbprint://AirPort-Express.local.:10000/…`) | page printed, job `completed`, 1 sheet, 10 s |
 | Script install | `sudo ./macos/install.sh --add-printer …` | filter + 82 PPDs installed, queue created |
 | Package install / upgrade | `installer -pkg build/SpliX-macOS-2.0.1.pkg -target /` | success, `cups-driverd` lists all 82 `(SpliX)` models |
 | Uninstall | `sudo ./macos/uninstall.sh` | filter, PPDs and SpliX queues removed |

@@ -1,0 +1,28 @@
+name: release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  package:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build universal filter and PPDs
+        run: ./macos/build.sh
+      - name: Offline smoke test (all PPDs)
+        run: ./tests/smoke.sh
+      - name: Build installer package
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          ./macos/make-pkg.sh "$VER"
+          shasum -a 256 build/*.pkg > build/SHA256SUMS.txt
+          cat build/SHA256SUMS.txt
+      - name: Publish GitHub release with the .pkg
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" build/*.pkg build/SHA256SUMS.txt \
+            --title "SpliX for macOS $GITHUB_REF_NAME" \
+            --notes-file CHANGELOG.md

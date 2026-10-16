@@ -35,7 +35,8 @@ CLP/CLX colour models), and rewrites the SpliX PPDs so that Apple's built-in `cg
 feeds the filter:
 
 ```
-PDF ──▶ cgpdftoraster (Apple) ──▶ rastertoqpdl (this project) ──▶ socket:// | usb:// | riousbprint:// ──▶ printer
+PDF ──▶ cgpdftoraster (Apple) ──▶ rastertoqpdl (this project) ──▶ usb:// | socket:// | riousbprint:// ──▶ printer
+                                                                      (all three verified)
 ```
 
 Verified on **macOS 27.0.1 (Apple Silicon)** with a **Samsung ML-2160**, both over **USB** and
@@ -141,6 +142,10 @@ Please include `macOS version`, `printer model`, `connection (USB / AirPort / IP
 a combined work must therefore be distributed under GPL-2.0. Free as in freedom and as in beer.
 
 ## Credits
+
+Packaged and maintained by [Bored Jar](https://github.com/boredjar-com). Built in one evening
+with Claude Code once the printer stopped working on macOS 27.
+
 
 * [SpliX](http://splix.ap2c.org) — Aurélien Croc (AP²C) and contributors. All the hard
   QPDL work is theirs.

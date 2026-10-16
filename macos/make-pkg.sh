@@ -4,7 +4,8 @@
 # Users open it with right-click > Open (Gatekeeper) or: sudo installer -pkg X.pkg -target /
 set -euo pipefail
 TOP="$(cd "$(dirname "$0")/.." && pwd)"
-VER="${1:-2.0.1}"
+VER="${1:-2.0.1}"          # file name, e.g. 2.0.1-macos1
+PKGVER="${VER%%-*}"        # Installer wants a numeric version, e.g. 2.0.1
 STAGE="$TOP/build/pkgroot"; SCRIPTS="$TOP/build/pkgscripts"
 rm -rf "$STAGE" "$SCRIPTS"
 mkdir -p "$STAGE/Library/Printers/SpliX" "$STAGE/Library/Printers/PPDs/Contents/Resources" "$SCRIPTS"
@@ -25,6 +26,6 @@ launchctl kickstart -k system/org.cups.cupsd || true
 exit 0
 POST
 chmod 755 "$SCRIPTS/postinstall"
-pkgbuild --root "$STAGE" --scripts "$SCRIPTS" --identifier org.splix.macos --version "$VER" \
+pkgbuild --root "$STAGE" --scripts "$SCRIPTS" --identifier com.boredjar.splix-macos --version "$PKGVER" \
   --install-location / --ownership recommended "$TOP/build/SpliX-macOS-$VER.pkg"
 echo "built $TOP/build/SpliX-macOS-$VER.pkg"
