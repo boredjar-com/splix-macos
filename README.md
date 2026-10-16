@@ -66,6 +66,7 @@ printer is plugged in; pick the `(SpliX)` entry instead, or run
 ### Terminal alternative
 
 ```bash
+brew install --cask boredjar-com/tap/splix-macos                 # Homebrew users
 sudo installer -pkg SpliX-macOS-2.0.1-macos2.pkg -target /       # same as double-click
 sudo /Library/Printers/SpliX/splix-autosetup.sh --dry-run        # show what would be added
 lpadmin -p Samsung_ML-2160 -E -v socket://AirPort-Express.local:9100 \
